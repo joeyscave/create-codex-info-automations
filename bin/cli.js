@@ -15,33 +15,33 @@ const templatesRoot = path.join(packageRoot, "templates", "automations");
 const automations = [
   {
     id: "hacker-news",
-    name: "Hacker News weekly digest",
+    name: "Hacker News 周报",
     template: "hacker-news/automation.toml"
   },
   {
     id: "weekly-github-trending-digest",
-    name: "GitHub Trending weekly digest",
+    name: "GitHub Trending 周报",
     template: "weekly-github-trending-digest/automation.toml"
   },
   {
     id: "hugging-face",
-    name: "Hugging Face Trending Papers weekly digest",
+    name: "Hugging Face Trending Papers 周报",
     template: "hugging-face/automation.toml"
   },
   {
     id: "hci",
-    name: "HCI weekly paper digest",
+    name: "HCI 论文周报",
     template: "hci/automation.toml"
   },
   {
     id: "v2ex",
-    name: "V2EX weekly digest",
+    name: "V2EX 周报",
     template: "v2ex/automation.toml"
   }
 ];
 
 main().catch((error) => {
-  console.error(`\nInstall failed: ${error.message}`);
+  console.error(`\n安装失败：${error.message}`);
   process.exit(1);
 });
 
@@ -68,15 +68,11 @@ async function main() {
 
     const digestPath = expandHome(
       flags.digestPath ||
-        (flags.yes
-          ? defaultDigestPath
-          : await askWithDefault(rl, "Obsidian Digest path", defaultDigestPath))
+        (flags.yes ? defaultDigestPath : await askDigestPath(rl, defaultDigestPath))
     );
     const workspace = expandHome(
       flags.workspace ||
-        (flags.yes
-          ? defaultWorkspace
-          : await askWithDefault(rl, "Codex automation workspace", defaultWorkspace))
+        (flags.yes ? defaultWorkspace : await askWorkspacePath(rl, defaultWorkspace))
     );
 
     const selected = await selectAutomations(rl, flags);
@@ -88,7 +84,7 @@ async function main() {
     }
 
     console.log("");
-    console.log(flags.dryRun ? "Previewing install:" : "Installing automations:");
+    console.log(flags.dryRun ? "安装预览：" : "正在安装自动化：");
 
     for (const automation of selected) {
       await installAutomation({
@@ -102,10 +98,10 @@ async function main() {
     }
 
     console.log("");
-    console.log(flags.dryRun ? "Dry run complete. No files were written." : "Done.");
-    console.log(`Codex automations directory: ${targetRoot}`);
-    console.log(`Digest path: ${digestPath}`);
-    console.log(`Workspace: ${workspace}`);
+    console.log(flags.dryRun ? "预览完成，没有写入任何文件。" : "安装完成。");
+    console.log(`Codex 自动化目录：${targetRoot}`);
+    console.log(`Digest 输出目录：${digestPath}`);
+    console.log(`运行工作目录：${workspace}`);
   } finally {
     rl.close();
   }
@@ -120,7 +116,7 @@ async function selectAutomations(rl, flags) {
     );
 
     if (missing.length > 0) {
-      throw new Error(`Unknown automation id: ${missing.join(", ")}`);
+      throw new Error(`未知的自动化 id：${missing.join(", ")}`);
     }
 
     return selected;
@@ -132,17 +128,17 @@ async function selectAutomations(rl, flags) {
 
   const selected = [];
   console.log("");
-  console.log("Choose automations to install:");
+  console.log("请选择要安装的自动化：");
 
   for (const automation of automations) {
-    const answer = await askWithDefault(rl, `${automation.name}? [Y/n]`, "Y");
+    const answer = await askWithDefault(rl, `安装「${automation.name}」？[Y/n]`, "Y");
     if (answer.toLowerCase() !== "n" && answer.toLowerCase() !== "no") {
       selected.push(automation);
     }
   }
 
   if (selected.length === 0) {
-    throw new Error("No automations selected.");
+    throw new Error("没有选择任何自动化。");
   }
 
   return selected;
@@ -160,7 +156,7 @@ async function installAutomation({ automation, digestPath, workspace, targetRoot
   const exists = await pathExists(targetFile);
 
   if (flags.dryRun) {
-    console.log(`- ${automation.id} -> ${targetFile}${exists ? " (exists)" : ""}`);
+    console.log(`- ${automation.id} -> ${targetFile}${exists ? "（已存在）" : ""}`);
     return;
   }
 
@@ -170,11 +166,11 @@ async function installAutomation({ automation, digestPath, workspace, targetRoot
     } else {
       const choice = await askWithDefault(
         rl,
-        `${automation.id} already exists. Replace and back up old file? [Y/n]`,
+        `${automation.id} 已存在。是否备份旧文件并替换？[Y/n]`,
         "Y"
       );
       if (choice.toLowerCase() === "n" || choice.toLowerCase() === "no") {
-        console.log(`- skipped ${automation.id}`);
+        console.log(`- 已跳过 ${automation.id}`);
         return;
       }
       await backupFile(targetFile);
@@ -183,7 +179,7 @@ async function installAutomation({ automation, digestPath, workspace, targetRoot
 
   await fs.mkdir(targetDir, { recursive: true });
   await fs.writeFile(targetFile, rendered, "utf8");
-  console.log(`- installed ${automation.id}`);
+  console.log(`- 已安装 ${automation.id}`);
 }
 
 async function backupFile(filePath) {
@@ -194,6 +190,27 @@ async function backupFile(filePath) {
 
 async function askWithDefault(rl, question, defaultValue) {
   const answer = await rl.question(`${question} (${defaultValue}): `);
+  return answer.trim() || defaultValue;
+}
+
+async function askDigestPath(rl, defaultValue) {
+  console.log("");
+  console.log("第 1 步：设置 Obsidian Digest 输出目录");
+  console.log("作用：自动化生成的周报会写入这个文件夹，方便你在 Obsidian 里长期保存和检索。");
+  console.log("通用示例：~/Obsidian/Main/Digest");
+  return askPathWithoutShowingDefault(rl, "请输入你的 Digest 输出目录", defaultValue);
+}
+
+async function askWorkspacePath(rl, defaultValue) {
+  console.log("");
+  console.log("第 2 步：设置 Codex 自动化运行目录");
+  console.log("作用：Codex 会在这个目录里运行自动化任务，适合放临时文件、脚本或抓取过程中产生的中间内容。");
+  console.log("通用示例：~/Projects/Digest");
+  return askPathWithoutShowingDefault(rl, "请输入你的运行工作目录", defaultValue);
+}
+
+async function askPathWithoutShowingDefault(rl, question, defaultValue) {
+  const answer = await rl.question(`${question}（直接回车使用默认位置）: `);
   return answer.trim() || defaultValue;
 }
 
@@ -237,7 +254,7 @@ function parseArgs(args) {
     } else if (arg.startsWith("--only=")) {
       flags.only = arg.slice("--only=".length);
     } else {
-      throw new Error(`Unknown argument: ${arg}`);
+      throw new Error(`未知参数：${arg}`);
     }
   }
 
@@ -247,7 +264,7 @@ function parseArgs(args) {
 function readValue(args, index, flag) {
   const value = args[index];
   if (!value || value.startsWith("--")) {
-    throw new Error(`${flag} requires a value`);
+    throw new Error(`${flag} 需要一个值`);
   }
   return value;
 }
@@ -280,22 +297,22 @@ async function pathExists(filePath) {
 function printHelp() {
   console.log(`create-codex-info-automations
 
-Usage:
+用法：
   npx create-codex-info-automations
   npx create-codex-info-automations --yes
   npx create-codex-info-automations --only hacker-news,v2ex
 
-Options:
-  -y, --yes              Install all automations with default paths
-  --dry-run              Preview files without writing
-  --force                Replace existing automations without backing up
-  --digest-path <path>   Obsidian Digest folder
-  --workspace <path>     Working directory for Codex automation runs
-  --codex-home <path>    Codex config directory, defaults to ~/.codex
-  --only <ids>           Comma-separated automation ids
-  -h, --help             Show help
+选项：
+  -y, --yes              使用默认路径安装全部自动化
+  --dry-run              只预览，不写入文件
+  --force                直接替换已有自动化，不备份
+  --digest-path <path>   Obsidian Digest 输出目录
+  --workspace <path>     Codex 自动化运行工作目录
+  --codex-home <path>    Codex 配置目录，默认是 ~/.codex
+  --only <ids>           只安装指定自动化，多个 id 用英文逗号分隔
+  -h, --help             显示帮助
 
-Automation ids:
+可用自动化 id：
   ${automations.map((automation) => automation.id).join("\n  ")}
 `);
 }
