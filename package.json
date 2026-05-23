@@ -4,8 +4,8 @@
   "description": "Install a set of Codex automations for weekly tech digests into Obsidian.",
   "type": "module",
   "bin": {
-    "create-codex-info-automations": "./bin/cli.js",
-    "codex-info-automations": "./bin/cli.js"
+    "create-codex-info-automations": "bin/cli.js",
+    "codex-info-automations": "bin/cli.js"
   },
   "files": [
     "bin",
