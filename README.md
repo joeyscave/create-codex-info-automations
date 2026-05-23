@@ -10,6 +10,8 @@
 - HCI 论文周报
 - V2EX 周报
 
+如果你不想使用一键安装，也可以直接复制 `prompts/` 里的提示词，手动创建自己的 Codex 自动化。
+
 ## 使用方式
 
 ```bash
@@ -45,6 +47,35 @@ node bin/cli.js --dry-run --yes
 ```bash
 node bin/cli.js --only hacker-news,v2ex
 ```
+
+## 手动创建自动化
+
+仓库里的 `prompts/` 文件夹提供了普通 Markdown 版本的提示词：
+
+```text
+prompts/
+  hacker-news.md
+  github-trending.md
+  hugging-face.md
+  hci.md
+  v2ex.md
+```
+
+如果你想手动创建自动化，可以打开对应文件，复制正文到 Codex 的自动化 prompt 里，再按自己的需要设置：
+
+- 运行频率
+- 使用的模型
+- Obsidian Digest 输出目录
+- Codex 自动化运行目录
+- 是否过滤某些话题
+
+提示词里的路径使用了通用示例：
+
+```text
+~/Obsidian/Main/Digest
+```
+
+手动使用时记得替换成你自己的 Obsidian Digest 文件夹。
 
 ## 前两步会问什么
 
