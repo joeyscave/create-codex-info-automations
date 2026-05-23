@@ -1,0 +1,11 @@
+version = 1
+id = "hugging-face"
+kind = "cron"
+name = "总结 Hugging Face"
+prompt = "帮我总结一下过去一周 Hugging Face 上的 Trending Papers\n\n请同时将内容写入 Obsidian 的 Digest 文件夹，路径为：\n__DIGEST_PATH__\n\n文件命名格式为：\nW[周序号]-Hugging-Face.md\n例如：W04-Hugging-Face.md\n\n不要只告诉我文件已写入；即使已经写入 Obsidian，也请在对话里完整展示总结内容。\n展示内容不要按 Markdown 代码块的形式，正常输出即可。"
+status = "ACTIVE"
+rrule = "RRULE:FREQ=WEEKLY;BYHOUR=17;BYMINUTE=30;BYDAY=FR"
+model = "gpt-5.5"
+reasoning_effort = "medium"
+execution_environment = "local"
+cwds = ["__WORKSPACE_DIR__"]

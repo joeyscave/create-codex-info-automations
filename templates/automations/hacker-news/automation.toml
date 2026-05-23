@@ -1,0 +1,11 @@
+version = 1
+id = "hacker-news"
+kind = "cron"
+name = "总结 Hacker News"
+prompt = "你是一名资深科技编辑和产品分析师。请帮我总结本周 Hacker News 首页和热门讨论中的重点内容。\n\n筛选 12-20 条最值得关注的内容。每条请包含：\n- 翻译后的标题（标题本身应是链接）\n- 对该内容简要的介绍，以及该条内容为什么值得关注\n\n要求：\n- 使用中文输出\n- 过滤掉政治相关内容\n- 优先总结高分、高评论数、技术含量高或讨论质量高的内容\n- 对每条入选的链接，请抓取实际网页内容进行总结介绍，而不是仅凭标题生成介绍\n\n请同时将内容写入 Obsidian 的 Digest 文件夹，路径为：\n__DIGEST_PATH__\n\n文件命名格式为：\nW[周序号]-Hacker-News.md\n例如：W04-Hacker-News.md\n\n不要只告诉我文件已写入；即使已经写入 Obsidian，也请在对话里完整展示总结内容。\n展示内容不要按 Markdown 代码块的形式，正常输出即可。"
+status = "ACTIVE"
+rrule = "RRULE:FREQ=WEEKLY;BYHOUR=17;BYMINUTE=30;BYDAY=FR"
+model = "gpt-5.5"
+reasoning_effort = "medium"
+execution_environment = "local"
+cwds = ["__WORKSPACE_DIR__"]

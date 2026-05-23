@@ -1,0 +1,11 @@
+version = 1
+id = "weekly-github-trending-digest"
+kind = "cron"
+name = "总结 GitHub Trending"
+prompt = "总结过去一周的 GitHub Trending，包含一句话总结和 Top10 项目即可。\n\n请同时将内容写入 Obsidian 的 Digest 文件夹，路径为：\n__DIGEST_PATH__\n\n文件命名格式为：\nW[周序号]-Github-Trending.md\n例如：W04-Github-Trending.md\n\n不要只告诉我文件已写入；即使已经写入 Obsidian，也请在对话里完整展示总结内容。\n展示内容不要按 Markdown 代码块的形式，正常输出即可。"
+status = "ACTIVE"
+rrule = "DTSTART:20260529T173000\nRRULE:FREQ=WEEKLY;BYDAY=FR"
+model = "gpt-5.5"
+reasoning_effort = "medium"
+execution_environment = "local"
+cwds = ["__WORKSPACE_DIR__"]

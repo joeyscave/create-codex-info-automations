@@ -1,0 +1,31 @@
+{
+  "name": "create-codex-info-automations",
+  "version": "0.1.0",
+  "description": "Install a set of Codex automations for weekly tech digests into Obsidian.",
+  "type": "module",
+  "bin": {
+    "create-codex-info-automations": "./bin/cli.js",
+    "codex-info-automations": "./bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "templates",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node bin/cli.js",
+    "dry-run": "node bin/cli.js --dry-run --yes"
+  },
+  "keywords": [
+    "codex",
+    "automation",
+    "obsidian",
+    "digest",
+    "agent"
+  ],
+  "license": "MIT"
+}

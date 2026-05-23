@@ -1,0 +1,11 @@
+version = 1
+id = "v2ex"
+kind = "cron"
+name = "总结 V2EX"
+prompt = "你是一名资深科技编辑和产品分析师。请帮我总结本周 V2ex 热门帖子。\n筛选 8-12 条最值得关注的内容。过滤掉政治、家庭、情感相关内容。\n\n你可以使用 vDaily 的聚合结果：[vDaily - V2EX 周报](https://vdaily.huguotao.com/weekly)\n\n请同时将内容写入 Obsidian 的 Digest 文件夹，路径为：\n__DIGEST_PATH__\n\n文件命名格式为：\nW[周序号]-V2EX.md\n例如：W04-V2EX.md\n\n不要只告诉我文件已写入；即使已经写入 Obsidian，也请在对话里完整展示总结内容。\n展示内容不要按 Markdown 代码块的形式，正常输出即可。"
+status = "ACTIVE"
+rrule = "RRULE:FREQ=WEEKLY;BYHOUR=12;BYMINUTE=30;BYDAY=MO"
+model = "gpt-5.5"
+reasoning_effort = "medium"
+execution_environment = "local"
+cwds = ["__WORKSPACE_DIR__"]
